@@ -1,0 +1,16 @@
+{
+  "name": "sweatsync-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build"
+  },
+  "packageManager": "pnpm@8.6.5",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^2.4.4"
+  }
+}

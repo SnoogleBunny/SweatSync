@@ -1,0 +1,12 @@
+{
+    "name": "@sweatsync/shared",
+    "version": "1.0.0",
+    "main": "src/index.js",
+    "exports": {
+      ".": "./src/index.js",
+      "./errors": "./src/errors/apiError.js"
+    },
+    "scripts": {
+      "test": "echo 'Shared package exists!'"
+    }
+  }
