@@ -79,10 +79,10 @@ exports.createTrainerProfile = async (req, res, next) => {
 
 exports.updateAvailability = async (req, res, next) => {
   try {
-    const { trainerId, availability } = req.body;
+    const { userId, availability } = req.body;
 
     const trainer = await Trainer.findByIdAndUpdate(
-      trainerId,
+      userId,
       { $set: { availability } },
       { new: true, runValidators: true }
     );
