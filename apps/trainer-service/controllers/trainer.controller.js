@@ -1,20 +1,23 @@
 const Trainer = require('../models/trainer.model');
 const { ApiError } = require('@sweatsync/shared/errors');
+const mongoose = require('mongoose');
 
 exports.getTrainers = async (req, res, next) => {
     try {
         const queryObj = {};
         
         if (req.query.specialties) {
-        queryObj.specialties = { $in: req.query.specialties.split(',') };
+          queryObj.specialties = { $in: req.query.specialties.split(',') };
         }
 
         if (req.query.location) {
-        queryObj.location = {
-            $regex: req.query.location,
-            $options: 'i'
-        };
+          queryObj.location = {
+              $regex: req.query.location,
+              $options: 'i'
+          };
         }
+
+        
 
         // Pagination
         const page = Math.max(1, parseInt(req.query.page, 10) || 1); // Default page 1
@@ -26,7 +29,8 @@ exports.getTrainers = async (req, res, next) => {
         Trainer.find(queryObj)
             .skip(skip)
             .limit(limit)
-            .populate('userId', 'name email')
+            //  We will add this later when we have a UserSchema
+            // .populate('userId', 'name email')
             .lean()
         ]);
 
@@ -75,6 +79,30 @@ exports.createTrainerProfile = async (req, res, next) => {
 };
 
 exports.updateAvailability = async (req, res, next) => {
+  try {
+    const { trainerId, availability } = req.body;
+
+    const trainer = await Trainer.findByIdAndUpdate(
+      trainerId,
+      { $set: { availability } },
+      { new: true, runValidators: true }
+    );
+
+    if (!trainer) {
+      throw new ApiError('Trainer not found', 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      data: trainer.availability
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateTrainer = async (req, res, next) => {
   try {
     const { trainerId, availability } = req.body;
 

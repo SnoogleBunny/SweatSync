@@ -3,7 +3,8 @@ const router = express.Router();
 const { 
   getTrainers,
   createTrainerProfile,
-  updateAvailability
+  updateAvailability,
+  updateTrainer
 } = require('../controllers/trainer.controller');
 
 // GET /api/trainers?location=...
@@ -14,5 +15,9 @@ router.post('/', createTrainerProfile);
 
 // PATCH /api/trainers/availability
 router.patch('/availability', updateAvailability);
+
+router.patch('/edit', updateTrainer);
+
+
 
 module.exports = router;
