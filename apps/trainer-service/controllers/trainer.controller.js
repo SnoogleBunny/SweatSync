@@ -1,6 +1,5 @@
 const Trainer = require('../models/trainer.model');
 const { ApiError } = require('@sweatsync/shared/errors');
-const mongoose = require('mongoose');
 
 exports.getTrainers = async (req, res, next) => {
     try {
