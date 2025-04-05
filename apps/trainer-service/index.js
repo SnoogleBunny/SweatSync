@@ -5,7 +5,7 @@ const trainerRoutes = require('./routes/trainer.routes');
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./utils/logger');
 const { baseLimiter } = require('@sweatsync/shared/ratelimiter');
-//const { authenticateJWT } = require('@sweatsync/shared/middleware');
+const { authenticateJWT } = require('@sweatsync/shared/middleware');
 
 const app = express();
 const PORT = process.env.PORT || 3001;

@@ -2,13 +2,17 @@ const express = require('express');
 const router = express.Router();
 const { 
   getTrainers,
+  getTrainerById,
   createTrainerProfile,
   updateAvailability,
   updateTrainer
 } = require('../controllers/trainer.controller');
 
-// GET /api/trainers?location=...
+// GET /api/trainers
 router.get('/', getTrainers);
+
+// GET /api/trainers
+router.get('/:id', getTrainerById);
 
 // POST /api/trainers
 router.post('/', createTrainerProfile);

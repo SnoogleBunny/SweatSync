@@ -9,14 +9,16 @@ exports.getTrainers = async (req, res, next) => {
           queryObj.specialties = { $in: req.query.specialties.split(',') };
         }
 
+        if (req.query.maxRate) {
+          queryObj.hourlyRate = { $lte: Number(req.query.maxRate) };
+        }
+
         if (req.query.location) {
           queryObj.location = {
               $regex: req.query.location,
               $options: 'i'
           };
         }
-
-        
 
         // Pagination
         const page = Math.max(1, parseInt(req.query.page, 10) || 1); // Default page 1
@@ -26,6 +28,7 @@ exports.getTrainers = async (req, res, next) => {
         const [total, trainers] = await Promise.all([
         Trainer.countDocuments(queryObj),
         Trainer.find(queryObj)
+            .select('name specialties hourlyRate location')
             .skip(skip)
             .limit(limit)
             //  We will add this later when we have a UserSchema
@@ -52,12 +55,40 @@ exports.getTrainers = async (req, res, next) => {
     }
 };
 
+exports.getTrainerById = async (req, res, next) => {
+  try {
+    const trainer = await Trainer.findOne(
+      { userId: req.params.id },
+      { availability: 0 },
+      { __v: 0, createdAt: 0 } // exclude all the metadata idgaf about those
+    ).lean();
+
+    if(!trainer) throw new ApiError('Trainer not found', 404);
+
+    res.status(200).json({
+      sucecss: true,
+      data: trainer
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 exports.createTrainerProfile = async (req, res, next) => {
   try {
     const { userId, specialties, hourlyRate, availability } = req.body;
 
+    const requiredFields = ['userId', 'specialties', 'hourlyRate'];
+    for (const field of requiredFields) {
+      if (!req.body[field]) throw new ApiError(`${field} is required`, 400);
+    }
+
     if (!userId) {
       throw new ApiError('User ID is required', 400);
+    }
+
+    if (!Array.isArray(req.body.specialties)) {
+      throw new ApiError('Specialties must be an array', 400);
     }
 
     const trainer = await Trainer.create({
@@ -105,8 +136,8 @@ exports.updateTrainer = async (req, res, next) => {
   try {
     const { userId, availability } = req.body;
 
-    const trainer = await Trainer.findByIdAndUpdate(
-      userId,
+    const trainer = await Trainer.findOneAndUpdate(
+      { userId: userId },
       { $set: { availability } },
       { new: true, runValidators: true }
     );
