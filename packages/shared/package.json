@@ -1,12 +1,17 @@
 {
-    "name": "@sweatsync/shared",
-    "version": "1.0.0",
-    "main": "src/index.js",
-    "exports": {
-      ".": "./src/index.js",
-      "./errors": "./src/errors/apiError.js"
-    },
-    "scripts": {
-      "test": "echo 'Shared package exists!'"
-    }
+  "name": "@sweatsync/shared",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./errors": "./src/errors/apiError.js",
+    "./middleware": "./src/middleware/authenticator.js",
+    "./ratelimiter": "./src/ratelimiter/baseLimiter.js"
+  },
+  "scripts": {
+    "test": "echo 'Shared package exists!'"
+  },
+  "dependencies": {
+    "express-rate-limit": "^7.5.0"
   }
+}

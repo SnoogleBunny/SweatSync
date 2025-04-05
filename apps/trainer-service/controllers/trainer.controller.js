@@ -82,7 +82,7 @@ exports.updateAvailability = async (req, res, next) => {
     const { userId, availability } = req.body;
 
     const trainer = await Trainer.findByIdAndUpdate(
-      userId,
+      userId, // @todo This is actually the ID of the mongo document not the userId of the record. We should change this at some point.
       { $set: { availability } },
       { new: true, runValidators: true }
     );
@@ -103,10 +103,10 @@ exports.updateAvailability = async (req, res, next) => {
 
 exports.updateTrainer = async (req, res, next) => {
   try {
-    const { trainerId, availability } = req.body;
+    const { userId, availability } = req.body;
 
     const trainer = await Trainer.findByIdAndUpdate(
-      trainerId,
+      userId,
       { $set: { availability } },
       { new: true, runValidators: true }
     );

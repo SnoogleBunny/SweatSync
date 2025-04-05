@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const trainerRoutes = require('./routes/trainer.routes');
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./utils/logger');
+const { baseLimiter } = require('@sweatsync/shared/ratelimiter');
+//const { authenticateJWT } = require('@sweatsync/shared/middleware');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -11,6 +13,7 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(express.json());
 app.use(requestLogger);
+//app.use(authenticateJWT);
 
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI, {})
@@ -18,11 +21,10 @@ mongoose.connect(process.env.MONGODB_URI, {})
         .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
-app.use('/api/trainers', trainerRoutes);
+app.use('/api/trainers', baseLimiter, trainerRoutes);
 
 //This should always be used AFTER the routes are imported
 app.use(errorHandler);
-
 
 // Health Check
 app.get('/health', (req, res) => {
