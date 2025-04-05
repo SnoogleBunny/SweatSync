@@ -81,8 +81,8 @@ exports.updateAvailability = async (req, res, next) => {
   try {
     const { userId, availability } = req.body;
 
-    const trainer = await Trainer.findByIdAndUpdate(
-      userId, // @todo This is actually the ID of the mongo document not the userId of the record. We should change this at some point.
+    const trainer = await Trainer.findOneAndUpdate(
+      { userId: userId },
       { $set: { availability } },
       { new: true, runValidators: true }
     );
