@@ -5,23 +5,23 @@ const {
   getTrainerById,
   createTrainerProfile,
   updateAvailability,
-  updateTrainer
+  updateTrainer,
+  deleteUsers
 } = require('../controllers/trainer.controller');
 
-// GET /api/trainers
+// GET
 router.get('/', getTrainers);
-
-// GET /api/trainers
 router.get('/:id', getTrainerById);
 
-// POST /api/trainers
+// POST 
 router.post('/', createTrainerProfile);
 
-// PATCH /api/trainers/availability
+// PATCH
 router.patch('/availability', updateAvailability);
-
 router.patch('/edit', updateTrainer);
 
-
+// Administrative Routes (We will move these to a separate decoupled service later)
+// DELETE
+router.delete("/", deleteUsers);
 
 module.exports = router;

@@ -153,3 +153,24 @@ exports.updateTrainer = async (req, res, next) => {
     next(err);
   }
 };
+
+
+// Administrative Controllers (We will move these in a decoupled service later)
+exports.deleteUsers = async (req, res, next) => {
+  try {
+    const result = await Trainer.deleteMany({ active: true });
+
+    res.status(200).json({
+      success: true,
+      message: `Deleted ${result.deletedCount} active trainers`,
+      deletedCount: result.deletedCount
+    });
+
+  } catch (err) {
+    // 5. Special handling for bulk operation errors
+    if (err.message.includes('batch operation')) {
+      return next(new ApiError('Database batch operation failed', 500));
+    }
+    next(err);
+  }
+};
