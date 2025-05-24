@@ -14,7 +14,10 @@ const trainerSchema = new mongoose.Schema({
   specialties: { 
     type: [String], 
     default: [],
-    validator: v => Array.isArray(v) && v.length > 0,
+    validate: {
+      validator: v => Array.isArray(v) && v.length > 0,
+      message: 'At least one specialty is required'
+    },
     required: true
   },
   hourlyRate: { 
