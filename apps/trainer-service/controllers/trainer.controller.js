@@ -21,14 +21,14 @@ exports.getTrainers = async (req, res, next) => {
         }
 
         // Pagination
-        const page = Math.max(1, parseInt(req.query.page, 10) || 1); // Default page 1
-        const limit = Math.max(1, parseInt(req.query.limit, 10) || 10); // Default 10 items
+        const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+        const limit = Math.max(1, parseInt(req.query.limit, 10) || 10);
         const skip = (page - 1) * limit;
 
         const [total, trainers] = await Promise.all([
         Trainer.countDocuments(queryObj),
         Trainer.find(queryObj)
-            .select('name specialties hourlyRate location')
+            .select('name specialties hourlyRate location active availability') // Make sure this lines up with Schema
             .skip(skip)
             .limit(limit)
             //  We will add this later when we have a UserSchema
@@ -76,7 +76,7 @@ exports.getTrainerById = async (req, res, next) => {
 
 exports.createTrainerProfile = async (req, res, next) => {
   try {
-    const { userId, specialties, hourlyRate, availability = [] } = req.body;
+    const { userId, specialties, hourlyRate, availability, active } = req.body;
 
     // 1. Input Validation (Concise version)
     if (!Array.isArray(specialties)) {
@@ -89,7 +89,7 @@ exports.createTrainerProfile = async (req, res, next) => {
       specialties,
       hourlyRate,
       availability,
-      active: true // Default for new trainers
+      active // Default for new trainers
     });
 
     res.status(201).json({
