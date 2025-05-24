@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const trainerSchema = new mongoose.Schema({
+  active: {
+    type: Boolean,
+    required: true 
+  },
   userId: { 
     type: mongoose.Schema.Types.Mixed, // We will use ObjectID once we get a UserSchema
     ref: 'User', 

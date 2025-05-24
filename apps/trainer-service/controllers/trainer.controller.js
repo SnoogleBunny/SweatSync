@@ -76,26 +76,20 @@ exports.getTrainerById = async (req, res, next) => {
 
 exports.createTrainerProfile = async (req, res, next) => {
   try {
-    const { userId, specialties, hourlyRate, availability } = req.body;
+    const { userId, specialties, hourlyRate, availability = [] } = req.body;
 
-    const requiredFields = ['userId', 'specialties', 'hourlyRate'];
-    for (const field of requiredFields) {
-      if (!req.body[field]) throw new ApiError(`${field} is required`, 400);
-    }
-
-    if (!userId) {
-      throw new ApiError('User ID is required', 400);
-    }
-
-    if (!Array.isArray(req.body.specialties)) {
+    // 1. Input Validation (Concise version)
+    if (!Array.isArray(specialties)) {
       throw new ApiError('Specialties must be an array', 400);
     }
 
+    // 2. Create with default values
     const trainer = await Trainer.create({
       userId,
       specialties,
       hourlyRate,
-      availability
+      availability,
+      active: true // Default for new trainers
     });
 
     res.status(201).json({
@@ -104,6 +98,10 @@ exports.createTrainerProfile = async (req, res, next) => {
     });
 
   } catch (err) {
+    // 3. Handle Mongoose validation errors automatically
+    if (err.name === 'ValidationError') {
+      return next(new ApiError(err.message, 400));
+    }
     next(err);
   }
 };
